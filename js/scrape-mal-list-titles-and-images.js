@@ -130,6 +130,7 @@ const cssSelectorTitleTd = 'td.title';
 const cssSelectorTitleLink = 'a.link';
 const cssSelectorImgTd = 'td.image';
 const cssSelectorImg = 'img.image';
+const cssSelectorType = 'td.type';
 
 /**
  * Extracts the title and image from the supplied row.
@@ -153,9 +154,27 @@ const getTitleAndImage = row => {
   }
 };
 
+/**
+ * @param {HTMLElement} row
+ * @param {string} type The type column value as listed in the MAL table; e.g. TV, Movie, OVA.
+ * @returns {boolean} True if the type matches, false otherwise.
+ */
+const isRowType = (row, type) => {
+  const typeTd = querySelectorOrThrow(row, cssSelectorType);
+  return type.toLowerCase() === typeTd.innerText.toLowerCase();
+};
+
 // Main starts here.
 const table = document.getElementsByClassName('list-table')[0];
 const rows = [...table.getElementsByClassName('list-table-data')];
+
+const filterByType = (type) => {
+  return rows.filter((row) => isRowType(row, type));
+};
+
+const filterByNotType = (type) => {
+  return rows.filter((row) => !isRowType(row, type));
+};
 
 // Generate JSON string.
 JSON.stringify(rows.map(getTitleAndImage));
